@@ -6,7 +6,6 @@ const Router= require("./routes/routes");
 const app = express();
 
 const corsOptions = {credentials:true, origin: process.env.URL || '*'};
-app.use(cookieParser());
 app.use(cors(corsOptions));
 require('dotenv').config();
 app.use(express.json()); //Cuando llegue un json se puede manipularlo y transformarlo a js
