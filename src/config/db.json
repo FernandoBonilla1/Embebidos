@@ -1,0 +1,7 @@
+{
+    "host": "ec2-3-226-163-72.compute-1.amazonaws.com",
+    "user": "pinjvtsqugqfid",
+    "password": "3883bcc47b3c427e6b4edf886ef148fe2dff58a2aede8f1336081f18fee42ded",
+    "database": "devfbfltt23t87",
+    "port": "5432"
+}
