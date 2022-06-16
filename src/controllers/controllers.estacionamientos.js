@@ -7,10 +7,10 @@ const getEstacionamientos = async (req, res) => {
         const estacionamiento = await connection.query('SELECT * FROM estacionamiento');
         if (estacionamiento.rows.length === 0) {
             res.status(200).json({
-                msg: "No hay estacionamiento"
+                msg: "No hay estacionamientos"
             })
         }
-        res.status(200).json({ estacionamientos: estacionamiento.rows });
+        res.status(200).json({estacionamiento.rows});
     } catch(error){
         res.status(500).json({
             msg: "No se pudo acceder a la tabla estacionamiento",

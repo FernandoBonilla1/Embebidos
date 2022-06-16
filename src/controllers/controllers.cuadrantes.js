@@ -8,7 +8,7 @@ const getCuadrantes = async (req, res) => {
                 msg: "No hay cuadrantes"
             })
         }
-        res.status(200).json({ cuadrantes: cuadrantes.rows });
+        res.status(200).json({cuadrantes.rows });
     } catch(error){
         res.status(500).json({
             msg: "No se pudo acceder a la tabla cuadrantes",
