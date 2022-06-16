@@ -10,7 +10,8 @@ const getEstacionamientos = async (req, res) => {
                 msg: "No hay estacionamiento"
             })
         }
-        res.status(200).json({ estacionamientos: estacionamiento.rows });
+        const reporte = estacionamiento.rows
+        res.status(200).json({reporte});
     } catch(error){
         res.status(500).json({
             msg: "No se pudo acceder a la tabla estacionamiento",
