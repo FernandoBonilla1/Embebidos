@@ -21,18 +21,33 @@ const getEstacionamientos = async (req, res) => {
 
 const updateEstacionamiento = async (req, res) =>{
     try{
-        const {distancia} = req.body
+        const {distancia, idEstacionamiento} = req.body
+        if(distancia == undefined || idEstacionamiento == undefined){
+            res.status(401).json({
+                msg: "Debe enviar el campo distancia e id estacionamiento"
+            })
+        }
         if(distancia < 100){
-
+            const estacionamiento = await connection.query("UPDATE estacionamiento SET disponible = False Where id = $1",[idEstacionamiento])
+            res.status(200).json({
+                msg: `Se actualizo el estado del estacionamiento con id: ${idEstacionamiento}`
+            })
         }else{
-
+            const estacionamiento = await connection.query("UPDATE estacionamiento SET disponible = True Where id = $1",[idEstacionamiento])
+            res.status(200).json({
+                msg: `Se actualizo el estado del estacionamiento con id: ${idEstacionamiento}`
+            })
         }
 
     } catch (error){
-
+        res.status(500).json({
+            msg: "No se pudo acceder a la tabla estacionamiento",
+            error
+        })
     }
 }
 
 module.exports = {
-    getEstacionamientos
+    getEstacionamientos,
+    updateEstacionamiento
 }
