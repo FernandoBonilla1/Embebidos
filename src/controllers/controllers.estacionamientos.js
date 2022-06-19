@@ -19,6 +19,23 @@ const getEstacionamientos = async (req, res) => {
     }
 }
 
+const getdisponibleCuadrante = async (req, res) => {
+    try{
+        const estacionamiento = await connection.query('select idcuadrante, count(*) as disponibles from estacionamiento where disponible = true group by idcuadrante order by idcuadrante asc ');
+        if (estacionamiento.rows.length === 0) {
+            res.status(200).json({
+                msg: "No hay estacionamientos"
+            })
+        }
+        res.status(200).json(estacionamiento.rows);
+    }catch(error){
+        res.status(500).json({
+            msg: "No se pudo acceder a la tabla estacionamiento",
+            error
+        })
+    }
+}
+
 const updateEstacionamiento = async (req, res) =>{
     try{
         const {distancia, idEstacionamiento} = req.body
@@ -49,5 +66,6 @@ const updateEstacionamiento = async (req, res) =>{
 
 module.exports = {
     getEstacionamientos,
-    updateEstacionamiento
+    updateEstacionamiento,
+    getdisponibleCuadrante
 }
