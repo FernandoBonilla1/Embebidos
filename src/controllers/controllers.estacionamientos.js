@@ -21,7 +21,7 @@ const getEstacionamientos = async (req, res) => {
 
 const getdisponibleCuadrante = async (req, res) => {
     try{
-        const estacionamiento = await connection.query('select idcuadrante, count(*) as disponibles from estacionamiento where disponible = true group by idcuadrante order by idcuadrante asc ');
+        const estacionamiento = await connection.query('select idcuadrante ,seccion.nombre , count(*) as disponibles  from estacionamiento inner join cuadrante on (estacionamiento.idcuadrante = cuadrante.id) inner join seccion on (cuadrante.idseccion = seccion.id) where disponible = true group by idcuadrante, seccion.nombre order by idcuadrante asc');
         if (estacionamiento.rows.length === 0) {
             res.status(200).json({
                 msg: "No hay estacionamientos"
