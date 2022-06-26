@@ -38,19 +38,19 @@ const getdisponibleCuadrante = async (req, res) => {
 
 const updateEstacionamiento = async (req, res) =>{
     try{
-        const {distancia, idEstacionamiento} = req.body
-        if(distancia == undefined || idEstacionamiento == undefined){
+        const {id_Cuadrante, idEstacionamiento, ocupadoS_N} = req.body
+        if(id_Cuadrante == undefined || idEstacionamiento == undefined || ocupadoS_N == undefined){
             res.status(401).json({
                 msg: "Debe enviar el campo distancia e id estacionamiento"
             })
         }
         if(distancia < 100){
-            const estacionamiento = await connection.query("UPDATE estacionamiento SET disponible = False Where id = $1",[idEstacionamiento])
+            const estacionamiento = await connection.query("UPDATE estacionamiento SET disponible = $1 Where id = $2 and idcuadrante = $3",[ocupadoS_N,idEstacionamiento,id_Cuadrante])
             res.status(200).json({
                 msg: `Se actualizo el estado del estacionamiento con id: ${idEstacionamiento}`
             })
         }else{
-            const estacionamiento = await connection.query("UPDATE estacionamiento SET disponible = True Where id = $1",[idEstacionamiento])
+            const estacionamiento = await connection.query("UPDATE estacionamiento SET disponible = $1 Where id = $2 and idcuadrante = $3",[ocupadoS_N, idEstacionamiento, id_Cuadrante])
             res.status(200).json({
                 msg: `Se actualizo el estado del estacionamiento con id: ${idEstacionamiento}`
             })
