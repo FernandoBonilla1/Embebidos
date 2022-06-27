@@ -3,7 +3,7 @@ const res = require("express/lib/response");
 const connection = require("../config/db")
 
 const getEstacionamientos = async (req, res) => {
-    try{
+    try {
         const estacionamiento = await connection.query('SELECT * FROM estacionamiento');
         if (estacionamiento.rows.length === 0) {
             res.status(200).json({
@@ -11,7 +11,7 @@ const getEstacionamientos = async (req, res) => {
             })
         }
         res.status(200).json(estacionamiento.rows);
-    } catch(error){
+    } catch (error) {
         res.status(500).json({
             msg: "No se pudo acceder a la tabla estacionamiento",
             error
@@ -20,15 +20,15 @@ const getEstacionamientos = async (req, res) => {
 }
 
 const getdisponibleCuadrante = async (req, res) => {
-    try{
-        const estacionamiento = await connection.query('select idcuadrante ,seccion.nombre , count(*) as disponibles  from estacionamiento inner join cuadrante on (estacionamiento.idcuadrante = cuadrante.id) inner join seccion on (cuadrante.idseccion = seccion.id) where disponible = true group by idcuadrante, seccion.nombre order by idcuadrante asc');
+    try {
+        const estacionamiento = await connection.query('Select estacionamiento.idcuadrante as cuadrante, seccion.name as nombre, count(*) as disponible from estacionamiento inner join cuadrante on (cuadrante.id = estacionamiento.idcuadrante) inner join seccion on (cuadrante.id_seccion = seccion.id) where estacionamiento.ocupado = false Group By (idcuadrante,seccion.name) ORDER BY cuadrante asc');
         if (estacionamiento.rows.length === 0) {
             res.status(200).json({
                 msg: "No hay estacionamientos"
             })
         }
         res.status(200).json(estacionamiento.rows);
-    }catch(error){
+    } catch (error) {
         res.status(500).json({
             msg: "No se pudo acceder a la tabla estacionamiento",
             error
@@ -36,27 +36,43 @@ const getdisponibleCuadrante = async (req, res) => {
     }
 }
 
-const updateEstacionamiento = async (req, res) =>{
-    try{
-        const {id_Cuadrante, idEstacionamiento, ocupadoS_N} = req.body
-        if(id_Cuadrante == undefined || idEstacionamiento == undefined || ocupadoS_N == undefined){
-            res.status(401).json({
-                msg: "Debe enviar el campo distancia e id estacionamiento"
+const getdisponibleCuadrante_1_2 = async (req, res) => {
+    try {
+        const estacionamiento = await connection.query('select estacionamiento.idcuadrante as cuadrante, count(*) as disponibles  from estacionamiento inner join cuadrante on (estacionamiento.idcuadrante = cuadrante.id) where ocupado = false group by idcuadrante order by idcuadrante asc');
+        if (estacionamiento.rows.length === 0) {
+            res.status(200).json({
+                msg: "No hay estacionamientos"
             })
         }
-        if(distancia < 100){
-            const estacionamiento = await connection.query("UPDATE estacionamiento SET disponible = $1 Where id = $2 and idcuadrante = $3",[ocupadoS_N,idEstacionamiento,id_Cuadrante])
-            res.status(200).json({
-                msg: `Se actualizo el estado del estacionamiento con id: ${idEstacionamiento}`
-            })
-        }else{
-            const estacionamiento = await connection.query("UPDATE estacionamiento SET disponible = $1 Where id = $2 and idcuadrante = $3",[ocupadoS_N, idEstacionamiento, id_Cuadrante])
-            res.status(200).json({
-                msg: `Se actualizo el estado del estacionamiento con id: ${idEstacionamiento}`
-            })
-        }
+        const cuadrante1 = estacionamiento.rows[0].disponibles;
+        const cuadrante2 = estacionamiento.rows[1].disponibles;
+        res.send(`${cuadrante1},${cuadrante2}`);
+    } catch (error) {
+        res.status(500).json({
+            msg: "No se pudo acceder a la tabla estacionamiento",
+            error
+        })
+    }
+}
 
-    } catch (error){
+const updateEstacionamiento = async (req, res) => {
+    try {
+        const { text } = req.body;
+        const divisiones = text.split(",");
+        const cuadrante = divisiones[0];
+        const estacionamiento = divisiones[1];
+        const ocupado = divisiones[2];
+        const mybool = (ocupado === 'true')
+        const date = Date.now();
+        const hoy = new Date(date);
+        const fecha_actual = hoy.toLocaleDateString();
+        const hora = `${hoy.getHours()}:${hoy.getMinutes()}:${hoy.getSeconds()}`;
+        const estacionamientos = await connection.query("UPDATE estacionamiento SET ocupado = $1 Where idcuadrante = $2 and idestacionamiento = $3", [mybool, cuadrante, estacionamiento]);
+        const registros = await connection.query("INSERT INTO registro(idcuadrante,idestacionamiento,fecha,hora,ocupado) VALUES($1,$2,$3,$4,$5)",[cuadrante,estacionamiento,fecha_actual,hora,mybool]);
+        res.status(200).json({
+            msg: "Se logro actualizar el estacionamiento"
+        })
+    } catch (error) {
         res.status(500).json({
             msg: "No se pudo acceder a la tabla estacionamiento",
             error
@@ -67,5 +83,6 @@ const updateEstacionamiento = async (req, res) =>{
 module.exports = {
     getEstacionamientos,
     updateEstacionamiento,
+    getdisponibleCuadrante_1_2,
     getdisponibleCuadrante
 }
