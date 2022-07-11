@@ -1,7 +1,7 @@
 const connection = require("../config/db")
 const getReportes = async (req, res) => {
     try{
-        const reporte = await connection.query('SELECT * FROM registro');
+        const reporte = await connection.query('select estacionamiento.idestacionamiento as idestacionamiento, estacionamiento.idcuadrante as cuadrante, seccion.name as seccion, seccion.id as idseccion, registro.fecha as fecha, registro.hora as hora, registro.ocupado as ocupado from estacionamiento inner join registro on (registro.idestacionamiento = estacionamiento.idestacionamiento and registro.idcuadrante = estacionamiento.idcuadrante) inner join cuadrante on (cuadrante.id = registro.idcuadrante) inner join seccion on (seccion.id = cuadrante.id_seccion)');
         if (reporte.rows.length === 0) {
             res.status(200).json({
                 msg: "No hay registros"
@@ -15,6 +15,7 @@ const getReportes = async (req, res) => {
         })
     }
 }
+
 
 module.exports = {
     getReportes
