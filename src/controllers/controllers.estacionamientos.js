@@ -19,6 +19,23 @@ const getEstacionamientos = async (req, res) => {
     }
 }
 
+const getOcupadoSeccion = async (req,res) => {
+    try{
+        const ocupados = await connection.query('Select seccion.id as id_seccion, seccion.name as nombre, count(*) as ocupado from estacionamiento  inner join cuadrante on (cuadrante.id = estacionamiento.idcuadrante)  inner join seccion on (cuadrante.id_seccion = seccion.id)  where estacionamiento.ocupado = true Group By (seccion.id, seccion.name) ORDER BY seccion.name asc')
+        if (ocupados.rows.length === 0) {
+            res.status(200).json({
+                msg: "No hay estacionamientos"
+            })
+        }
+        res.status(200).json(ocupados.rows);
+    } catch(error){
+        res.status(500).json({
+            msg: "No se pudo acceder a la tabla estacionamiento",
+            error
+        })
+    }
+}
+
 const getdisponibleCuadrante = async (req, res) => {
     try {
         const estacionamiento = await connection.query('Select estacionamiento.idcuadrante as cuadrante, seccion.name as nombre, count(*) as disponible from estacionamiento inner join cuadrante on (cuadrante.id = estacionamiento.idcuadrante) inner join seccion on (cuadrante.id_seccion = seccion.id) where estacionamiento.ocupado = false Group By (idcuadrante,seccion.name) ORDER BY cuadrante asc');
@@ -82,5 +99,6 @@ module.exports = {
     getEstacionamientos,
     updateEstacionamiento,
     getdisponibleCuadrante_1_2,
-    getdisponibleCuadrante
+    getdisponibleCuadrante,
+    getOcupadoSeccion
 }
