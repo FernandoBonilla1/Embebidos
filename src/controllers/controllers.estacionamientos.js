@@ -80,7 +80,7 @@ const updateEstacionamiento = async (req, res) => {
         const mybool = (ocupado === 'true')
         const date = Date.now();
         const hoy = new Date(date);
-        const fecha_actual = hoy.toLocaleDateString();
+        const fecha_actual = hoy.toISOString().slice(0,10);
         const hora = `${hoy.getHours()}:${hoy.getMinutes()}:${hoy.getSeconds()}`;
         const estacionamientos = await connection.query("UPDATE estacionamiento SET ocupado = $1 Where idcuadrante = $2 and idestacionamiento = $3", [mybool, cuadrante, estacionamiento]);
         const registros = await connection.query("INSERT INTO registro(idcuadrante,idestacionamiento,fecha,hora,ocupado) VALUES($1,$2,$3,$4,$5)",[cuadrante,estacionamiento,fecha_actual,hora,mybool]);

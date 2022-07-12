@@ -16,7 +16,8 @@ const {getCuadrantes} = require("../controllers/controllers.cuadrantes")
 router.get("/cuadrantes", getCuadrantes)
 
 //Rutas designadas para reportes
-const {getReportes} = require("../controllers/controllers.reportes")
+const {getReportes, getReportesTrue} = require("../controllers/controllers.reportes")
 router.get("/reportes",getReportes)
+router.get("/reportestrue",getReportesTrue);
 
 module.exports = router;
