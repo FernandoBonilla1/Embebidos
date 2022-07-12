@@ -25,9 +25,7 @@ const getReportesTrue = async (req, res) => {
                 msg: "No hay registros"
             })
         }
-        const date = Date.now();
-        const hoy = new Date(date);
-        const registros = reportes.rows.map((reporte) => { 
+        const registros = reportes.rows.map((reporte) => { //Se crean arreglos con los datos de las ventas utilizando id y fecha
             const registro = {
                 idestacionamiento: reporte.idestacionamiento,
                 cuadrante: reporte.cuadrante,
@@ -39,8 +37,8 @@ const getReportesTrue = async (req, res) => {
             }
             return registro
         })
-        const actuales = registros.filter(actual => actual.fecha == hoy)
-        res.status(200).json(actuales);
+
+        res.status(200).json(reportes.rows);
     } catch(error){
         res.status(500).json({
             msg: "No se pudo acceder a la tabla registro",
