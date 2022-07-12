@@ -19,25 +19,12 @@ const getReportes = async (req, res) => {
 
 const getReportesTrue = async (req, res) => {
     try{
-        const reportes = await connection.query('select estacionamiento.idestacionamiento as idestacionamiento, estacionamiento.idcuadrante as cuadrante, seccion.name as seccion, seccion.id as idseccion, registro.fecha as fecha, registro.hora as hora, registro.ocupado as ocupado from estacionamiento inner join registro on (registro.idestacionamiento = estacionamiento.idestacionamiento and registro.idcuadrante = estacionamiento.idcuadrante) inner join cuadrante on (cuadrante.id = registro.idcuadrante) inner join seccion on (seccion.id = cuadrante.id_seccion) where registro.ocupado = true');
+        const reportes = await connection.query('select estacionamiento.idestacionamiento as idestacionamiento, estacionamiento.idcuadrante as cuadrante, seccion.name as seccion, seccion.id as idseccion, registro.fecha as fecha, registro.hora as hora, registro.ocupado as ocupado from estacionamiento inner join registro on (registro.idestacionamiento = estacionamiento.idestacionamiento and registro.idcuadrante = estacionamiento.idcuadrante) inner join cuadrante on (cuadrante.id = registro.idcuadrante) inner join seccion on (seccion.id = cuadrante.id_seccion) where registro.ocupado = true and current_date = TO_DATE(registro.fecha,"YYYY-MM-DD") ');
         if (reportes.rows.length === 0) {
             res.status(200).json({
                 msg: "No hay registros"
             })
         }
-        const registros = reportes.rows.map((reporte) => { //Se crean arreglos con los datos de las ventas utilizando id y fecha
-            const registro = {
-                idestacionamiento: reporte.idestacionamiento,
-                cuadrante: reporte.cuadrante,
-                seccion: reporte.seccion,
-                idseccion: reporte.idseccion,
-                fecha: new Date(reporte.fecha),
-                hora: reporte.hora,
-                ocupado: reporte.ocupado
-            }
-            return registro
-        })
-
         res.status(200).json(reportes.rows);
     } catch(error){
         res.status(500).json({
