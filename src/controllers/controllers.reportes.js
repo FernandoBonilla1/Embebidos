@@ -28,20 +28,19 @@ const getReportesTrue = async (req, res) => {
         const date = Date.now();
         const hoy = new Date(date);
         const registros = reportes.rows.map((reporte) => { 
-            if(hoy == new Date(reporte.fecha)){
-                const registro = {
-                    idestacionamiento: reporte.idestacionamiento,
-                    cuadrante: reporte.cuadrante,
-                    seccion: reporte.seccion,
-                    idseccion: reporte.idseccion,
-                    fecha: new Date(reporte.fecha),
-                    hora: reporte.hora,
-                    ocupado: reporte.ocupado
-                }
+            const registro = {
+                idestacionamiento: reporte.idestacionamiento,
+                cuadrante: reporte.cuadrante,
+                seccion: reporte.seccion,
+                idseccion: reporte.idseccion,
+                fecha: new Date(reporte.fecha),
+                hora: reporte.hora,
+                ocupado: reporte.ocupado
             }
             return registro
         })
-        res.status(200).json(registros.rows);
+        const actuales = registros.filter(actual => actual.fecha == hoy)
+        res.status(200).json(actuales);
     } catch(error){
         res.status(500).json({
             msg: "No se pudo acceder a la tabla registro",
