@@ -73,7 +73,8 @@ const getdisponibleCuadrante_1_2 = async (req, res) => {
 const updateEstacionamiento = async (req, res) => {
     try {
         const { text } = req.body;
-        const divisiones = text.split(",");
+        const newtext = text.replace("\r","")
+        const divisiones = newtext.split(",");
         const cuadrante = divisiones[0];
         const estacionamiento = divisiones[1];
         const ocupado = divisiones[2];
