@@ -2,12 +2,14 @@ const { Router } = require('express');
 const router = Router();
 
 //Rutas designadas a los estacionamientos
-const {getEstacionamientos,updateEstacionamiento, getdisponibleCuadrante_1_2,getdisponibleCuadrante,getOcupadoSeccion} = require("../controllers/controllers.estacionamientos")
+const {getEstacionamientos,updateEstacionamiento, getdisponibleCuadrante_1_2,getdisponibleCuadrante,getOcupadoSeccion, getdisponibleEIC, getdisponibleSalud} = require("../controllers/controllers.estacionamientos")
 router.get("/estacionamientos", getEstacionamientos)
 router.post("/updateestacionamiento", updateEstacionamiento)
 router.get("/disponiblecuadrante_1_2", getdisponibleCuadrante_1_2)
 router.get("/disponiblecuadrante", getdisponibleCuadrante)
 router.get("/ocupadosseccion",getOcupadoSeccion);
+router.get("/disponibleEIC",getdisponibleEIC)
+router.get("/disponibleSalud",getdisponibleSalud)
 //Rutas designadas a las secciones
 const {getSecciones} = require("../controllers/controllers.secciones")
 router.get("/secciones", getSecciones)

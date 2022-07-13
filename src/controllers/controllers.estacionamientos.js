@@ -53,6 +53,40 @@ const getdisponibleCuadrante = async (req, res) => {
     }
 }
 
+const getdisponibleEIC = async (req, res) => {
+    try {
+        const estacionamiento = await connection.query('Select seccion.name as nombre, count(*) as disponible  from estacionamiento inner join cuadrante on (cuadrante.id = estacionamiento.idcuadrante) inner join seccion on (cuadrante.id_seccion = seccion.id) where estacionamiento.ocupado = false and seccion.id = 1 Group By (seccion.name)');
+        if (estacionamiento.rows.length === 0) {
+            res.status(200).json({
+                msg: "No hay estacionamientos"
+            })
+        }
+        res.status(200).json(estacionamiento.rows);
+    } catch (error) {
+        res.status(500).json({
+            msg: "No se pudo acceder a la tabla estacionamiento",
+            error
+        })
+    }
+}
+
+const getdisponibleSalud = async (req, res) => {
+    try {
+        const estacionamiento = await connection.query('Select seccion.name as nombre, count(*) as disponible  from estacionamiento inner join cuadrante on (cuadrante.id = estacionamiento.idcuadrante) inner join seccion on (cuadrante.id_seccion = seccion.id) where estacionamiento.ocupado = false and seccion.id = 2 Group By (seccion.name)');
+        if (estacionamiento.rows.length === 0) {
+            res.status(200).json({
+                msg: "No hay estacionamientos"
+            })
+        }
+        res.status(200).json(estacionamiento.rows);
+    } catch (error) {
+        res.status(500).json({
+            msg: "No se pudo acceder a la tabla estacionamiento",
+            error
+        })
+    }
+}
+
 const getdisponibleCuadrante_1_2 = async (req, res) => {
     try {
         const estacionamiento = await connection.query('select estacionamiento.idcuadrante as cuadrante, count(*) as disponibles  from estacionamiento inner join cuadrante on (estacionamiento.idcuadrante = cuadrante.id) where ocupado = false group by idcuadrante order by idcuadrante asc');
@@ -101,5 +135,7 @@ module.exports = {
     updateEstacionamiento,
     getdisponibleCuadrante_1_2,
     getdisponibleCuadrante,
-    getOcupadoSeccion
+    getOcupadoSeccion,
+    getdisponibleEIC,
+    getdisponibleSalud
 }
